@@ -4,7 +4,7 @@ import fetch from "isomorphic-unfetch";
 
 class Votes extends Component {
   static async getInitialProps({ req }) {
-    const response = await fetch("http://localhost:3000/votes");
+    const response = await fetch("https://web-platform-est.herokuapp.com/votes");
     const votes = await response.json();
     return { votes };
   }
