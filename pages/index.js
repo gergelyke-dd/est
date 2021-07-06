@@ -21,7 +21,8 @@ class Votes extends Component {
     subscribed: false,
     voted: false,
     connectedCount: this.props.votes.connectedCount,
-    votes: this.props.votes.votes
+    votes: this.props.votes.votes,
+    reveal: false,
   };
 
   handleUserCount = count => this.setState({ connectedCount: count });
@@ -41,7 +42,15 @@ class Votes extends Component {
     this.setState({ voted: true });
   };
 
-  reset = () => this.props.socket.emit("votes.reset");
+  reset = () => {
+    this.props.socket.emit("votes.reset");
+    this.setState({reveal: false});
+  };
+  
+  reveal = () => {
+    console.log(this.state.votes)
+    this.setState({reveal: true})
+  };
 
   handleKeyboard = event => {
     switch (event.keyCode) {
@@ -97,9 +106,9 @@ class Votes extends Component {
   }
 
   render() {
-    const btnStyles = { padding: "1em", margin: "0.3em", fontSize: "1.5em" };
+    const btnStyles = { padding: "1em", margin: "0.3em", fontSize: "1.5em", border: '3px solid rgb(235, 23, 0)', borderRadius: '5px', background: 'white' };
     return (
-      <main>
+      <main style={{fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"', maxWidth: '1000px', margin: 'auto'}}>
         <h1>
           {this.state.votes.length} / {this.state.connectedCount} voted
         </h1>
@@ -107,55 +116,61 @@ class Votes extends Component {
         <button
           style={btnStyles}
           onClick={() => this.vote(0.5)}
-          disabled={this.state.voted}
+          disabled={this.state.voted || this.state.reveal}
         >
           ½
         </button>
         <button
           style={btnStyles}
           onClick={() => this.vote(1)}
-          disabled={this.state.voted}
+          disabled={this.state.voted || this.state.reveal}
         >
           1
         </button>
         <button
           style={btnStyles}
           onClick={() => this.vote(2)}
-          disabled={this.state.voted}
+          disabled={this.state.voted || this.state.reveal}
         >
           2
         </button>
         <button
           style={btnStyles}
           onClick={() => this.vote(3)}
-          disabled={this.state.voted}
+          disabled={this.state.voted || this.state.reveal}
         >
           3
         </button>
         <button
           style={btnStyles}
           onClick={() => this.vote(5)}
-          disabled={this.state.voted}
+          disabled={this.state.voted || this.state.reveal}
         >
           5
         </button>
         <button
           style={btnStyles}
           onClick={() => this.vote(8)}
-          disabled={this.state.voted}
+          disabled={this.state.voted || this.state.reveal}
         >
           8
         </button>
-        {this.state.votes.length === this.state.connectedCount && (
-          <React.Fragment>
+        {(this.state.reveal || (this.state.votes.length === this.state.connectedCount)) && (
+          <div style={{border: '1px solid #ccc', padding: '1em', borderRadius: '5px'}}>
             <h1>Votes</h1>
             <div style={{ fontSize: "2em", marginBottom: "1em" }}>
               {this.state.votes.join(" - ")}
             </div>
-          </React.Fragment>
+            <div style={{ fontSize: "2em", marginBottom: "1em" }}>
+              Avg: {this.state.votes.reduce(function (accumulator, currentValue) { return accumulator + currentValue }, 0)/ this.state.votes.length}
+            </div>
+          </div>
         )}
         <p>
           <button onClick={this.reset}>reset votes</button>
+        </p>
+        <p>
+          <button onClick={this.reveal}>reveal votes</button>
         </p>
       </main>
     );
