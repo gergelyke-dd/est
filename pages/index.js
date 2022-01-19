@@ -162,7 +162,7 @@ class Votes extends Component {
               {this.state.votes.join(" - ")}
             </div>
             <div style={{ fontSize: "2em", marginBottom: "1em" }}>
-              Avg: {this.state.votes.reduce(function (accumulator, currentValue) { return accumulator + currentValue }, 0)/ this.state.votes.length}
+              Avg: {(this.state.votes.reduce(function (accumulator, currentValue) { return accumulator + currentValue }, 0)/ this.state.votes.length).toFixed(2)}
             </div>
           </div>
         )}
